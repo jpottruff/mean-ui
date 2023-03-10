@@ -1,3 +1,10 @@
 main {
+    width: 80%;
+    margin: auto;    
+}
+
+app-post-create,
+app-post-list {
+    display: block;
     margin-top: 1rem;
 }
