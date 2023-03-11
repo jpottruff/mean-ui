@@ -1,4 +1,4 @@
-# MeanUi
+# Mean UI
 
 ## Commands
 `ng serve` - for a [dev server](http://localhost:4200/)
