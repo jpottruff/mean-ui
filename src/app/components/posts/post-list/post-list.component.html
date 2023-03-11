@@ -1,6 +1,7 @@
 
 <mat-accordion multi="true" *ngIf="posts.length > 0; else noPostsMsg">
     <mat-expansion-panel *ngFor="let post of posts">
+      <!-- Header -->
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{post.title}}
@@ -9,8 +10,13 @@
           {{post.desc}}
         </mat-panel-description>
       </mat-expansion-panel-header>
-
+      <!-- Content -->
       <p>{{post.content}}</p>
+      <!-- Actions -->
+      <mat-action-row>
+        <button mat-button color="accent">EDIT</button>
+        <button mat-button color="warn">DELETE</button>
+      </mat-action-row>
     </mat-expansion-panel>
 </mat-accordion>
 
