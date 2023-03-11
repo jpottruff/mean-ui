@@ -14,11 +14,12 @@ export class PostCreateComponent {
     if (form.invalid) {
       return;
     }
-    
+
     const post: Post = {
       title: form.value.title, 
       content: form.value.content
     }
+    
     this.postCreated.emit(post);
   }
 
