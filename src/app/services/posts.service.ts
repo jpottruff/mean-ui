@@ -31,7 +31,11 @@ export class PostsService {
 
   addPost(title: string, content: string) {
     const post: Post = {id: null, title, content};
-    this.posts.push(post);
-    this.postsUpdated.next([...this.posts]);
+    this.http.post<{message: string}>(`${this.SERVER_BASE}/api/posts`, post)
+      .subscribe(res => {
+        console.log(res.message);
+        this.posts.push(post);
+        this.postsUpdated.next([...this.posts]);
+      });
   }
 }
