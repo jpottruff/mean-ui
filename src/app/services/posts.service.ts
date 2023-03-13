@@ -34,8 +34,10 @@ export class PostsService {
 
   addPost(title: string, content: string) {
     const post: Post = {id: null, title, content};
-    this.http.post<{message: string}>(`${this.SERVER_BASE}/api/posts`, post)
+    this.http.post<{message: string, createdId: string}>(`${this.SERVER_BASE}/api/posts`, post)
       .subscribe(res => {
+        const id = res.createdId;
+        post.id = id;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
