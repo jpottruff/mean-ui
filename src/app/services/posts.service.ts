@@ -36,8 +36,16 @@ export class PostsService {
     const post: Post = {id: null, title, content};
     this.http.post<{message: string}>(`${this.SERVER_BASE}/api/posts`, post)
       .subscribe(res => {
-        console.log(res.message);
         this.posts.push(post);
+        this.postsUpdated.next([...this.posts]);
+      });
+  }
+
+  deletePost(id: string) {
+    this.http.delete(`${this.SERVER_BASE}/api/posts/${id}`)
+      .subscribe(res => {
+        const updatedPosts = this.posts.filter(post => post.id !== id);
+        this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts]);
       });
   }
