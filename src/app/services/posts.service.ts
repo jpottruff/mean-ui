@@ -28,6 +28,10 @@ export class PostsService {
     return [...this.posts];
   }
 
+  getPost(id: string): Post {
+    return { ...this.posts.find(post => post.id === id) }
+  }
+
   getPostsUpdatedListener(): Observable<Post[]> {
     return this.postsUpdated.asObservable();
   }
@@ -41,6 +45,12 @@ export class PostsService {
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
+  }
+
+  updatePost(id: string, title: string, content: string) {
+    const post: Post = { id, title, content };
+    this.http.put(`${this.SERVER_BASE}/api/posts/${id}`, post)
+      .subscribe(res => console.log(res))
   }
 
   deletePost(id: string) {
