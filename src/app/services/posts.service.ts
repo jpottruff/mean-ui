@@ -54,6 +54,7 @@ export class PostsService {
     const post: Post = { id, title, content };
     this.http.put<{message: string}>(`${this.SERVER_BASE}/api/posts/${id}`, post)
       .subscribe(res => {
+        // TODO / FIXME - brekaing changes introduced; currently not working as exptected
         const updatedPosts = [...this.posts];
         const stalePostIndex = updatedPosts.findIndex(post => post.id === id);
         updatedPosts[stalePostIndex] = post;
