@@ -25,7 +25,8 @@ export class PostCreateComponent implements OnInit {
       if (paramMap.has('id')) {
         this.mode = EditMode.EDIT;
         this.editingId = paramMap.get('id');
-        this.post = this.postsService.getPost(this.editingId);
+        this.postsService.getPost(this.editingId)
+          .subscribe(post => this.post = post)
       } else {
         this.mode = EditMode.CREATE
       }
@@ -40,6 +41,7 @@ export class PostCreateComponent implements OnInit {
     this.mode === EditMode.CREATE
       ? this.postsService.addPost(form.value.title, form.value.content)
       : this.postsService.updatePost(this.editingId, form.value.title, form.value.content)
+    
     form.resetForm();
   }
 

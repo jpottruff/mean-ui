@@ -28,8 +28,11 @@ export class PostsService {
     return [...this.posts];
   }
 
-  getPost(id: string): Post {
-    return { ...this.posts.find(post => post.id === id) }
+  getPost(id: string): Observable<Post> {
+    return this.http.get<{message: string, post?: any}>(`${this.SERVER_BASE}/api/posts/${id}`)
+      .pipe(
+        map(res => (res.post) ? this.convertFetchedPost(res.post) : undefined)
+      )
   }
 
   getPostsUpdatedListener(): Observable<Post[]> {
@@ -49,8 +52,14 @@ export class PostsService {
 
   updatePost(id: string, title: string, content: string) {
     const post: Post = { id, title, content };
-    this.http.put(`${this.SERVER_BASE}/api/posts/${id}`, post)
-      .subscribe(res => console.log(res))
+    this.http.put<{message: string}>(`${this.SERVER_BASE}/api/posts/${id}`, post)
+      .subscribe(res => {
+        const updatedPosts = [...this.posts];
+        const stalePostIndex = updatedPosts.findIndex(post => post.id === id);
+        updatedPosts[stalePostIndex] = post;
+        this.posts = updatedPosts;
+        this.postsUpdated.next([...this.posts]);
+      })
   }
 
   deletePost(id: string) {
