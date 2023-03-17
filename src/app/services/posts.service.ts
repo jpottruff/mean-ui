@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { map, Observable, Subject } from 'rxjs';
 import { Post } from '../models/post.interface';
 
@@ -14,7 +15,7 @@ export class PostsService {
     return `http://localhost:3000`
   } 
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private router: Router) { }
 
   getPosts(): Post[] {
     this.http.get<{ message: string, posts: any[]}>(`${this.SERVER_BASE}/api/posts`)
@@ -47,6 +48,8 @@ export class PostsService {
         post.id = id;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
+
+        this.router.navigate(['/']);
       });
   }
 
@@ -54,12 +57,13 @@ export class PostsService {
     const post: Post = { id, title, content };
     this.http.put<{message: string}>(`${this.SERVER_BASE}/api/posts/${id}`, post)
       .subscribe(res => {
-        // TODO / FIXME - brekaing changes introduced; currently not working as exptected
         const updatedPosts = [...this.posts];
         const stalePostIndex = updatedPosts.findIndex(post => post.id === id);
         updatedPosts[stalePostIndex] = post;
         this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts]);
+
+        this.router.navigate(['/'])
       })
   }
 
