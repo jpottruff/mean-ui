@@ -1,32 +1,39 @@
 <mat-card>
-    <mat-card-content>
-        <form #postForm="ngForm" (submit)="onSavePost(postForm)">
-            <mat-form-field>
-                <mat-label>Title</mat-label>
-                <input 
-                    matInput 
-                    placeholder="My awesome post" 
-                    [ngModel]="post?.title" 
-                    name="title"
-                    required
-                    #title="ngModel"
-                >
-                <!-- <mat-error *ngIf="emailFormControl.hasError('required')">X -->
-                <mat-error *ngIf="title.invalid">Title is required</mat-error>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Enter your post</mat-label>
-                <textarea 
-                    matInput 
-                    rows="6" 
-                    [ngModel]="post?.content" 
-                    name="content"
-                    required
-                    #content="ngModel"
-                ></textarea>
-                <mat-error *ngIf="title.invalid">Content is required</mat-error>
-            </mat-form-field>
-            <button mat-raised-button color="primary">Save Post</button> 
-        </form>
-    </mat-card-content>
+    <ng-container *ngIf="isLoading; then loadingSpinner; else cardContent"></ng-container>
+    <ng-template #loadingSpinner>
+        <mat-spinner></mat-spinner>
+    </ng-template>
+
+    <ng-template #cardContent>
+        <mat-card-content>
+            <form #postForm="ngForm" (submit)="onSavePost(postForm)">
+                <mat-form-field>
+                    <mat-label>Title</mat-label>
+                    <input 
+                        matInput 
+                        placeholder="My awesome post" 
+                        [ngModel]="post?.title" 
+                        name="title"
+                        required
+                        #title="ngModel"
+                    >
+                    <!-- <mat-error *ngIf="emailFormControl.hasError('required')">X -->
+                    <mat-error *ngIf="title.invalid">Title is required</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Enter your post</mat-label>
+                    <textarea 
+                        matInput 
+                        rows="6" 
+                        [ngModel]="post?.content" 
+                        name="content"
+                        required
+                        #content="ngModel"
+                    ></textarea>
+                    <mat-error *ngIf="title.invalid">Content is required</mat-error>
+                </mat-form-field>
+                <button mat-raised-button color="primary">Save Post</button> 
+            </form>
+        </mat-card-content>
+    </ng-template>
 </mat-card>
