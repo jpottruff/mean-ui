@@ -20,6 +20,12 @@
                     <!-- <mat-error *ngIf="emailFormControl.hasError('required')">X -->
                     <mat-error *ngIf="title.invalid">Title is required</mat-error>
                 </mat-form-field>
+
+                <div class="picker-row">
+                    <button mat-stroked-button color="accent" type="button" (click)="filePicker.click()">Add Image</button>
+                    <input type="file" #filePicker>
+                </div>
+
                 <mat-form-field>
                     <mat-label>Enter your post</mat-label>
                     <textarea 
