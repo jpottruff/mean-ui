@@ -60,6 +60,7 @@ export class PostCreateComponent implements OnInit {
 
   onImagePicked(event: Event) {
     const file = (event.target as HTMLInputElement).files[0];
+    // TODO - indicate if theres a bad file present or dont patch
     this.form.patchValue({image: file});
     this.form.get('image').updateValueAndValidity();
 

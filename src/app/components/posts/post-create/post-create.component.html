@@ -15,7 +15,6 @@
                         formControlName="title"
                         placeholder="My awesome post" 
                     >
-                    <!-- <mat-error *ngIf="emailFormControl.hasError('required')">X -->
                     <mat-error *ngIf="form.get('title').invalid">Title is required</mat-error>
                 </mat-form-field>
 
