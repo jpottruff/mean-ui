@@ -21,7 +21,7 @@
 
                 <div class="picker-row">
                     <button mat-stroked-button color="accent" type="button" (click)="filePicker.click()">Add Image</button>
-                    <input type="file" #filePicker>
+                    <input type="file" (change)="onImagePicked($event)" #filePicker>
                 </div>
 
                 <mat-form-field>
