@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from 'src/app/models/post.interface';
 import { PostsService } from 'src/app/services/posts.service';
@@ -15,13 +15,23 @@ export enum EditMode {
   styleUrls: ['./post-create.component.css']
 })
 export class PostCreateComponent implements OnInit {
-  post: Post;
   isLoading = false;
+  form: FormGroup
+  post: Post;
   private mode: EditMode = EditMode.CREATE;
   private editingId: string;
 
   constructor(private readonly postsService: PostsService, private readonly route: ActivatedRoute) {}
   ngOnInit(): void {
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)]
+      }),
+      content: new FormControl(null, {
+        validators: [Validators.required]
+      })
+    });
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('id')) {
         this.mode = EditMode.EDIT;
@@ -29,7 +39,11 @@ export class PostCreateComponent implements OnInit {
         this.isLoading = true;
         this.postsService.getPost(this.editingId)
           .subscribe(post => {
-            this.post = post
+            this.post = post;
+            this.form.setValue({
+              title: this.post.title,
+              content: this.post.content
+            });
             this.isLoading = false;
           })
       } else {
@@ -39,18 +53,18 @@ export class PostCreateComponent implements OnInit {
 
   }
 
-  onSavePost(form: NgForm) {
-    if (form.invalid) {
+  onSavePost() {
+    if (this.form.invalid) {
       return;
     }
     // NOTE: setting this back to false is not currently necessary (navigating back to home)
     // if this logic changes this needs to be addressed
     this.isLoading = true; 
     this.mode === EditMode.CREATE
-      ? this.postsService.addPost(form.value.title, form.value.content)
-      : this.postsService.updatePost(this.editingId, form.value.title, form.value.content)
+      ? this.postsService.addPost(this.form.value.title, this.form.value.content)
+      : this.postsService.updatePost(this.editingId, this.form.value.title, this.form.value.content)
     
-    form.resetForm();
+    this.form.reset();
   }
 
 }

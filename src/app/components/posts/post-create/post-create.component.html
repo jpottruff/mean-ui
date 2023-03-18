@@ -6,19 +6,17 @@
 
     <ng-template #cardContent>
         <mat-card-content>
-            <form #postForm="ngForm" (submit)="onSavePost(postForm)">
+            <form [formGroup]="form" (submit)="onSavePost()">
                 <mat-form-field>
                     <mat-label>Title</mat-label>
                     <input 
                         matInput 
+                        type="text"
+                        formControlName="title"
                         placeholder="My awesome post" 
-                        [ngModel]="post?.title" 
-                        name="title"
-                        required
-                        #title="ngModel"
                     >
                     <!-- <mat-error *ngIf="emailFormControl.hasError('required')">X -->
-                    <mat-error *ngIf="title.invalid">Title is required</mat-error>
+                    <mat-error *ngIf="form.get('title').invalid">Title is required</mat-error>
                 </mat-form-field>
 
                 <div class="picker-row">
@@ -31,12 +29,9 @@
                     <textarea 
                         matInput 
                         rows="6" 
-                        [ngModel]="post?.content" 
-                        name="content"
-                        required
-                        #content="ngModel"
+                        formControlName="content"
                     ></textarea>
-                    <mat-error *ngIf="title.invalid">Content is required</mat-error>
+                    <mat-error *ngIf="form.get('content').invalid">Content is required</mat-error>
                 </mat-form-field>
                 <button mat-raised-button color="primary">Save Post</button> 
             </form>
