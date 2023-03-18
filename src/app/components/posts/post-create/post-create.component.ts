@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from 'src/app/models/post.interface';
 import { PostsService } from 'src/app/services/posts.service';
+import { mimeType } from 'src/app/validators/mime-type.validator';
 
 export enum EditMode {
   CREATE = 'CREATE',
@@ -29,7 +30,8 @@ export class PostCreateComponent implements OnInit {
         validators: [Validators.required, Validators.minLength(3)]
       }),
       image: new FormControl(null, {
-        validators: [Validators.required]
+        validators: [Validators.required],
+        asyncValidators: [mimeType]
       }),
       content: new FormControl(null, {
         validators: [Validators.required]
