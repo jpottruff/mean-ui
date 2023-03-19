@@ -49,8 +49,7 @@ export class PostCreateComponent implements OnInit {
             this.form.setValue({
               title: this.post.title,
               content: this.post.content,
-              // TODO - handle image on load
-              imagePath: null 
+              image: this.post.imagePath
             });
             this.isLoading = false;
           })
@@ -86,7 +85,12 @@ export class PostCreateComponent implements OnInit {
           this.form.value.content,
           this.form.value.image
         )
-      : this.postsService.updatePost(this.editingId, this.form.value.title, this.form.value.content)
+      : this.postsService.updatePost(
+          this.editingId, 
+          this.form.value.title, 
+          this.form.value.content,
+          this.form.value.image
+        )
     
     this.form.reset();
   }

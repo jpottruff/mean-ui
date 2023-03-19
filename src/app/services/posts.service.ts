@@ -30,7 +30,7 @@ export class PostsService {
   }
 
   getPost(id: string): Observable<Post> {
-    return this.http.get<{message: string, post?: any}>(`${this.SERVER_BASE}/api/posts/${id}`)
+    return this.http.get<{message: string, post?: Post}>(`${this.SERVER_BASE}/api/posts/${id}`)
       .pipe(
         map(res => (res.post) ? this.convertFetchedPost(res.post) : undefined)
       )
@@ -41,6 +41,7 @@ export class PostsService {
   }
 
   addPost(title: string, content: string, image: File) {
+    // TODO - replace with function
     const post = new FormData();
     post.append('title', title);
     post.append('content', content);
@@ -62,13 +63,16 @@ export class PostsService {
       });
   }
 
-  updatePost(id: string, title: string, content: string) {
-    // TODO handle images on update
-    const post: Post = { id, title, content, imagePath: null };
-    this.http.put<{message: string}>(`${this.SERVER_BASE}/api/posts/${id}`, post)
+  updatePost(id: string, title: string, content: string, image: File | string) {
+    const postData: FormData | Post = (typeof(image) == 'object')
+      ? this.postAsFormData(title, content, image, id)
+      : {id, title, content, imagePath: image as string}
+
+    this.http.put<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts/${id}`, postData)
       .subscribe(res => {
         const updatedPosts = [...this.posts];
-        const stalePostIndex = updatedPosts.findIndex(post => post.id === id);
+        const stalePostIndex = updatedPosts.findIndex(p => p.id === id);
+        const post = res.post;
         updatedPosts[stalePostIndex] = post;
         this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts]);
@@ -94,5 +98,20 @@ export class PostsService {
       content: post.content,
       imagePath: post.imagePath
     }
+  }
+
+  /** @returns a `Post` as a `FormData` object */
+  private postAsFormData(title: string, content: string, image: File, id?: string): FormData {
+    const postData = new FormData();
+    if (id) {
+      postData.append('id', id);
+    }
+
+    postData.append('title', title);
+    postData.append('content', content);
+    // make sure 'image' lines up with the property being accessed by multer on the backend 
+    postData.append('image', image, title);
+
+    return postData;
   }
 }
