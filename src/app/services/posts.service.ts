@@ -17,8 +17,13 @@ export class PostsService {
 
   constructor(private readonly http: HttpClient, private router: Router) { }
 
-  getPosts(): Post[] {
-    this.http.get<{ message: string, posts: any[]}>(`${this.SERVER_BASE}/api/posts`)
+  getPosts(postsPerPage: number, currentPage: number): Post[] {
+    const params = {
+      pageSize: postsPerPage,
+      page: currentPage
+    }
+    
+    this.http.get<{ message: string, posts: any[]}>(`${this.SERVER_BASE}/api/posts`, { params } )
       .pipe(map(res => {
         return res.posts.map(post => this.convertFetchedPost(post))
       }))
