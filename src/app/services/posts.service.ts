@@ -41,12 +41,7 @@ export class PostsService {
   }
 
   addPost(title: string, content: string, image: File) {
-    // TODO - replace with function
-    const post = new FormData();
-    post.append('title', title);
-    post.append('content', content);
-    // make sure 'image' lines up with the property being accessed by multer on the backend 
-    post.append('image', image, title);
+    const post = this.postAsFormData(title, content, image);
 
     this.http.post<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts`, post)
       .subscribe(res => {
