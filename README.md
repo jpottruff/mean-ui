@@ -8,3 +8,6 @@
 - [Angular Material](https://material.angular.io/)
 - [NPM](https://www.npmjs.com/)
 - [RxJS](https://rxjs.dev/)
+
+## Resouces
+- [Angular File Upload Tutorial](https://academind.com/tutorials/angular-image-upload-made-easy)
