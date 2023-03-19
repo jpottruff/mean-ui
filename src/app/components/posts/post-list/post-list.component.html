@@ -13,10 +13,15 @@
           <mat-panel-title>
             {{post.title}}
           </mat-panel-title>
-          <mat-panel-description>
-            {{post.desc}}
-          </mat-panel-description>
+          <!-- TODO -->
+          <!-- <mat-panel-description>
+            {{post.author}} 
+          </mat-panel-description> -->
         </mat-expansion-panel-header>
+        <!-- Image -->
+        <div class="post-img">
+          <img [src]="post.imagePath" [alt]="post.title">
+        </div>
         <!-- Content -->
         <p>{{post.content}}</p>
         <!-- Actions -->
