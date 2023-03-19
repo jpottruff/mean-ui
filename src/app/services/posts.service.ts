@@ -40,13 +40,22 @@ export class PostsService {
     return this.postsUpdated.asObservable();
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = {id: null, title, content};
-    this.http.post<{message: string, createdId: string}>(`${this.SERVER_BASE}/api/posts`, post)
+  addPost(title: string, content: string, image: File) {
+    const post = new FormData();
+    post.append('title', title);
+    post.append('content', content);
+    // make sure 'image' lines up with the property being accessed by multer on the backend 
+    post.append('image', image, title);
+
+    this.http.post<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts`, post)
       .subscribe(res => {
-        const id = res.createdId;
-        post.id = id;
-        this.posts.push(post);
+        const savedPost: Post = {
+          id: res.post.id,
+          title,
+          content,
+          imagePath: res.post.imagePath,
+        };
+        this.posts.push(savedPost);
         this.postsUpdated.next([...this.posts]);
 
         this.router.navigate(['/']);
@@ -54,7 +63,8 @@ export class PostsService {
   }
 
   updatePost(id: string, title: string, content: string) {
-    const post: Post = { id, title, content };
+    // TODO handle images on update
+    const post: Post = { id, title, content, imagePath: null };
     this.http.put<{message: string}>(`${this.SERVER_BASE}/api/posts/${id}`, post)
       .subscribe(res => {
         const updatedPosts = [...this.posts];
@@ -81,7 +91,8 @@ export class PostsService {
     return {
       id: post._id,
       title: post.title,
-      content: post.content
+      content: post.content,
+      imagePath: post.imagePath
     }
   }
 }

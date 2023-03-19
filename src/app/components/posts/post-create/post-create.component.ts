@@ -48,7 +48,9 @@ export class PostCreateComponent implements OnInit {
             this.post = post;
             this.form.setValue({
               title: this.post.title,
-              content: this.post.content
+              content: this.post.content,
+              // TODO - handle image on load
+              imagePath: null 
             });
             this.isLoading = false;
           })
@@ -79,7 +81,11 @@ export class PostCreateComponent implements OnInit {
     // if this logic changes this needs to be addressed
     this.isLoading = true; 
     this.mode === EditMode.CREATE
-      ? this.postsService.addPost(this.form.value.title, this.form.value.content)
+      ? this.postsService.addPost(
+          this.form.value.title, 
+          this.form.value.content,
+          this.form.value.image
+        )
       : this.postsService.updatePost(this.editingId, this.form.value.title, this.form.value.content)
     
     this.form.reset();
