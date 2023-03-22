@@ -1,8 +1,7 @@
-
 <ng-container *ngIf="isLoading; then loadingSpinner; else postList"></ng-container>
 
 <ng-template #loadingSpinner>
-    <mat-spinner></mat-spinner>
+  <mat-spinner></mat-spinner>
 </ng-template>
 
 <ng-template #postList>
@@ -31,16 +30,18 @@
         </mat-action-row>
       </mat-expansion-panel>
   </mat-accordion>
-  <mat-paginator 
-    [length]="totalPosts"
-    [pageSize]="postsPerPage"
-    [pageSizeOptions]="pageSizeOpts"
-    (page)="onChangedPage($event)"
-    aria-label="Select page"
-  >
-  </mat-paginator>
-  
+
   <ng-template #noPostsMsg>
       <p class="info-text mat-body-1">No posts added yet!</p>
   </ng-template>
 </ng-template>
+
+<mat-paginator 
+  *ngIf="posts.length > 0"
+  [length]="totalPosts"
+  [pageSize]="postsPerPage"
+  [pageSizeOptions]="pageSizeOpts"
+  (page)="onChangedPage($event)"
+  aria-label="Select page"
+>
+</mat-paginator>
