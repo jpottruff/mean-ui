@@ -12,7 +12,7 @@ import { PostsService } from 'src/app/services/posts.service';
 export class PostListComponent implements OnInit, OnDestroy {
   isLoading = false;
   posts: Post[] = [];
-  totalPosts = 10; // TODO - dont hardcode
+  totalPosts = 0;
   postsPerPage = 5;
   pageSizeOpts = [1, 2, 5, 10];
   currentPage = 1;
@@ -24,8 +24,9 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.posts = this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.subs.postSub = this.postsService.getPostsUpdatedListener()
-      .subscribe((posts: Post[]) => {
-          this.posts = posts;
+      .subscribe((data: {posts: Post[], totalPosts: number}) => {
+          this.posts = data.posts;
+          this.totalPosts = data.totalPosts;
           this.isLoading = false;
       });
   }
@@ -39,11 +40,14 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.currentPage = event.pageIndex + 1;
     this.postsPerPage = event.pageSize;
     this.posts = this.postsService.getPosts(this.postsPerPage, this.currentPage);
-
   }
 
   onDelete(id: string) {
-    this.postsService.deletePost(id);
+    this.isLoading = true;
+    this.postsService.deletePost(id)
+      .subscribe(() => {
+        this.postsService.getPosts(this.postsPerPage, this.currentPage)
+      });
   }
 
 

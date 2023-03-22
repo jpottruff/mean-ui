@@ -9,7 +9,7 @@ import { Post } from '../models/post.interface';
 })
 export class PostsService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private postsUpdated = new Subject<{ posts: Post[], totalPosts: number }>();
   
   get SERVER_BASE() {
     return `http://localhost:3000`
@@ -23,13 +23,19 @@ export class PostsService {
       page: currentPage
     }
     
-    this.http.get<{ message: string, posts: any[]}>(`${this.SERVER_BASE}/api/posts`, { params } )
+    this.http.get<{ message: string, posts: any[], totalPosts: number}>(`${this.SERVER_BASE}/api/posts`, { params } )
       .pipe(map(res => {
-        return res.posts.map(post => this.convertFetchedPost(post))
+        return {
+          posts: res.posts.map(post => this.convertFetchedPost(post)),
+          totalPosts: res.totalPosts
+        }
       }))
-      .subscribe(posts => {
-        this.posts = posts; 
-        this.postsUpdated.next([...this.posts])
+      .subscribe(data => {
+        this.posts = data.posts; 
+        this.postsUpdated.next({
+          posts: [...this.posts],
+          totalPosts: data.totalPosts
+        })
       })
     return [...this.posts];
   }
@@ -41,7 +47,7 @@ export class PostsService {
       )
   }
 
-  getPostsUpdatedListener(): Observable<Post[]> {
+  getPostsUpdatedListener(): Observable<{posts: Post[], totalPosts: number}> {
     return this.postsUpdated.asObservable();
   }
 
@@ -49,18 +55,7 @@ export class PostsService {
     const post = this.postAsFormData(title, content, image);
 
     this.http.post<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts`, post)
-      .subscribe(res => {
-        const savedPost: Post = {
-          id: res.post.id,
-          title,
-          content,
-          imagePath: res.post.imagePath,
-        };
-        this.posts.push(savedPost);
-        this.postsUpdated.next([...this.posts]);
-
-        this.router.navigate(['/']);
-      });
+      .subscribe(res => this.router.navigate(['/']));
   }
 
   updatePost(id: string, title: string, content: string, image: File | string) {
@@ -69,25 +64,11 @@ export class PostsService {
       : {id, title, content, imagePath: image as string}
 
     this.http.put<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts/${id}`, postData)
-      .subscribe(res => {
-        const updatedPosts = [...this.posts];
-        const stalePostIndex = updatedPosts.findIndex(p => p.id === id);
-        const post = res.post;
-        updatedPosts[stalePostIndex] = post;
-        this.posts = updatedPosts;
-        this.postsUpdated.next([...this.posts]);
-
-        this.router.navigate(['/'])
-      })
+      .subscribe(res => this.router.navigate(['/']))
   }
 
   deletePost(id: string) {
-    this.http.delete(`${this.SERVER_BASE}/api/posts/${id}`)
-      .subscribe(res => {
-        const updatedPosts = this.posts.filter(post => post.id !== id);
-        this.posts = updatedPosts;
-        this.postsUpdated.next([...this.posts]);
-      });
+    return this.http.delete(`${this.SERVER_BASE}/api/posts/${id}`);
   }
 
   /** Converts a post retrieved from the backend to the appropriate form */
