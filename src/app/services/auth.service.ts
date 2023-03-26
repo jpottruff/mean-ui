@@ -16,8 +16,16 @@ export class AuthService {
   createUser(email: string, password: string) { 
     const authData: AuthData = { email, password }; 
     this.http.post<{}>(`${this.SERVER_BASE}/api/user/signup`, authData)
+    .subscribe(res => {
+      console.log('res', res)
+    })
+  }
+  
+  login(email: string, password: string) {
+    const authData: AuthData = { email, password }; 
+    this.http.post<{}>(`${this.SERVER_BASE}/api/user/login`, authData)
       .subscribe(res => {
-        console.log('res', res)
+        console.log(res)
       })
   }
 }
