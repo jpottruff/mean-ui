@@ -24,4 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     Object.values(this.subs).forEach(sub => sub.unsubscribe())
   }
 
+  onLogout(): void {
+    this.authService.logout();
+  }
 }

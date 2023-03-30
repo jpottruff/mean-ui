@@ -35,7 +35,7 @@ export class AuthService {
     })
   }
   
-  login(email: string, password: string) {
+  login(email: string, password: string): void {
     const authData: AuthData = { email, password }; 
     this.http.post<{message: string, token: string}>(`${this.SERVER_BASE}/api/user/login`, authData)
     .subscribe(res => {
@@ -45,5 +45,11 @@ export class AuthService {
           this.authStatusListener.next(true);
         }
       })
+  }
+
+  logout(): void {
+    this.token = null;
+    this.isAuthenticated = false;
+    this.authStatusListener.next(false);
   }
 }
