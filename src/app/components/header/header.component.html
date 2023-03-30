@@ -2,20 +2,23 @@
     <span><a routerLink="/">My Messages</a></span>
     <span class="spacer"></span>
     <ul>
-        <li>
+        <li *ngIf="userIsAuthenticated">
             <a mat-mini-fab color="accent" routerLink="/create">
                 <mat-icon>add circle</mat-icon>
             </a>
         </li>
-        <li>
+        <li *ngIf="!userIsAuthenticated">
             <a mat-flat-button color="primary" routerLink="/login">
                 Login 
             </a>
         </li>
-        <li>
+        <li *ngIf="!userIsAuthenticated">
             <a mat-flat-button color="primary" routerLink="/signup">
                 Sign Up
             </a>
+        </li>
+        <li *ngIf="userIsAuthenticated">
+            <button mat-flat-button color="primary">Logout</button>
         </li>
     </ul>
 </mat-toolbar>
