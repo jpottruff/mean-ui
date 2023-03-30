@@ -11,6 +11,7 @@ export class AuthService {
   get token(): string { return this._token; };
   set token(token: string) { this._token = token; };
 
+  private isAuthenticated = false;
   private authStatusListener = new Subject<boolean>();
 
   get SERVER_BASE() {
@@ -19,6 +20,9 @@ export class AuthService {
 
   constructor(private readonly http: HttpClient) { }
 
+  getIsAuthorizaed() {
+    return this.isAuthenticated;
+  }
   getAuthStatusListener(): Observable<boolean> {
     return this.authStatusListener.asObservable();
   }
@@ -36,7 +40,10 @@ export class AuthService {
     this.http.post<{message: string, token: string}>(`${this.SERVER_BASE}/api/user/login`, authData)
     .subscribe(res => {
         this.token = res.token;
-        this.authStatusListener.next(true);
+        if (this.token) {
+          this.isAuthenticated = true;
+          this.authStatusListener.next(true);
+        }
       })
   }
 }
