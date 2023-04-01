@@ -21,7 +21,7 @@ export class AuthService {
 
   constructor(private readonly http: HttpClient, private readonly router: Router) { }
 
-  getIsAuthorizaed() {
+  getIsAuthorized() {
     return this.isAuthenticated;
   }
   getAuthStatusListener(): Observable<boolean> {

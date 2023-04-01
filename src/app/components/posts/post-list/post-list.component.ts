@@ -24,7 +24,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.userIsAuthenticated = this.authService.getIsAuthorizaed();
+    this.userIsAuthenticated = this.authService.getIsAuthorized();
     this.subs.authSub = this.authService.getAuthStatusListener()
       .subscribe(isAuthenticated => {
           this.userIsAuthenticated = isAuthenticated;
