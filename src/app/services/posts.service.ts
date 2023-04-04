@@ -60,8 +60,8 @@ export class PostsService {
 
   updatePost(id: string, title: string, content: string, image: File | string) {
     const postData: FormData | Post = (typeof(image) == 'object')
-      ? this.postAsFormData(title, content, image, id) // TODO ? - make creator not optional in `Post`
-      : {id, title, content, imagePath: image as string}
+      ? this.postAsFormData(title, content, image, id) 
+      : { id, title, content, imagePath: image as string, creator: null }
 
     this.http.put<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts/${id}`, postData)
       .subscribe(res => this.router.navigate(['/']))
