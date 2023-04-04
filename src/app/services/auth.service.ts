@@ -34,6 +34,7 @@ export class AuthService {
     const authData: AuthData = { email, password }; 
     this.http.post<{}>(`${this.SERVER_BASE}/api/user/signup`, authData)
     .subscribe(res => {
+      // TODO - login logic
       console.log('res', res)
     })
   }
