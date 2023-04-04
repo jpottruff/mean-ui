@@ -60,7 +60,7 @@ export class PostsService {
 
   updatePost(id: string, title: string, content: string, image: File | string) {
     const postData: FormData | Post = (typeof(image) == 'object')
-      ? this.postAsFormData(title, content, image, id)
+      ? this.postAsFormData(title, content, image, id) // TODO ? - make creator not optional in `Post`
       : {id, title, content, imagePath: image as string}
 
     this.http.put<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts/${id}`, postData)
@@ -77,7 +77,8 @@ export class PostsService {
       id: post._id,
       title: post.title,
       content: post.content,
-      imagePath: post.imagePath
+      imagePath: post.imagePath,
+      creator: post.creator
     }
   }
 
