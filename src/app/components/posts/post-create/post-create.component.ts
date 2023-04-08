@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Post } from 'src/app/models/post.interface';
+import { AuthService } from 'src/app/services/auth.service';
 import { PostsService } from 'src/app/services/posts.service';
 import { mimeType } from 'src/app/validators/mime-type.validator';
 
@@ -15,16 +17,28 @@ export enum EditMode {
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy{
   isLoading = false;
   form: FormGroup
   post: Post;
   imagePreview: string;
   private mode: EditMode = EditMode.CREATE;
   private editingId: string;
+  private subs: { [key:string]: Subscription } = {}
 
-  constructor(private readonly postsService: PostsService, private readonly route: ActivatedRoute) {}
+
+  constructor(
+    private readonly postsService: PostsService, 
+    private readonly route: ActivatedRoute, 
+    private readonly authService: AuthService
+  ) {}
+
   ngOnInit(): void {
+    this.subs.authChangeSub = this.authService.getAuthStatusListener()
+    .subscribe(_isAuthenticated => { 
+      this.isLoading = false;
+    });
+    
     this.form = new FormGroup({
       title: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(3)]
@@ -57,6 +71,10 @@ export class PostCreateComponent implements OnInit {
         this.mode = EditMode.CREATE
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    Object.values(this.subs).forEach(sub => sub.unsubscribe())
   }
 
   onImagePicked(event: Event) {
