@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Post } from 'src/app/models/post.interface';
 import { AuthService } from 'src/app/services/auth.service';
-import { PostsService } from 'src/app/services/posts.service';
 import { mimeType } from 'src/app/validators/mime-type.validator';
+import { PostsService } from '../../services/posts.service';
+import { Post } from '../../models/post.interface';
 
 export enum EditMode {
   CREATE = 'CREATE',
