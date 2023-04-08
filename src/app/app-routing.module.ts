@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { PostCreateComponent } from './posts/components/post-create/post-create.component';
-import { LoginComponent } from './components/auth/login/login.component';
-import { SignUpComponent } from './components/auth/sign-up/sign-up.component';
+import { LoginComponent } from './auth/components/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { PostListComponent } from './posts/components/post-list/post-list.component';
+import { SignUpComponent } from './auth/components/sign-up/sign-up.component';
 
 const routes: Routes = [
   { path:  '', component: PostListComponent },
