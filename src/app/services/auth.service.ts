@@ -38,33 +38,41 @@ export class AuthService {
   createUser(email: string, password: string) { 
     const authData: AuthData = { email, password }; 
     this.http.post<{}>(`${this.SERVER_BASE}/api/user/signup`, authData)
-    .subscribe(res => {
-      // TODO - login logic
-      console.log('res', res)
-    })
+    .subscribe( // TODO - fix deprecated usage style
+      _res => {
+        // TODO - login logic
+        this.router.navigate(['/']);
+      },
+      _err => {
+        this.authStatusListener.next(false);
+      })
   }
   
   login(email: string, password: string): void {
     const authData: AuthData = { email, password }; 
     this.http.post<{message: string, token: string, expiresIn: number, userId: string }>(`${this.SERVER_BASE}/api/user/login`, authData)
-    .subscribe(res => {
-        this.token = res.token;
-        if (this.token) {
-          this.userId = res.userId;
+      .subscribe( // TODO - fix deprecated usage style
+        res => {
+          this.token = res.token;
+          if (this.token) {
+            this.userId = res.userId;
 
-          // sec to MS
-          const expiresInMS = res.expiresIn * 1000;          
-          this.setAuthTimer(expiresInMS);
+            // sec to MS
+            const expiresInMS = res.expiresIn * 1000;          
+            this.setAuthTimer(expiresInMS);
 
-          const now = new Date();
-          const expirationDate = new Date(now.getTime() + expiresInMS);
-          this.saveAuthData(this.token, expirationDate, this.userId);
+            const now = new Date();
+            const expirationDate = new Date(now.getTime() + expiresInMS);
+            this.saveAuthData(this.token, expirationDate, this.userId);
 
-          this.isAuthenticated = true;
-          this.authStatusListener.next(true);
-          this.router.navigate(['/']);
-        }
-      })
+            this.isAuthenticated = true;
+            this.authStatusListener.next(true);
+            this.router.navigate(['/']);
+          }
+        },
+        _err => {
+          this.authStatusListener.next(false);
+        })
   }
 
   logout(): void {
