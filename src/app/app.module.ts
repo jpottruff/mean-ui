@@ -20,7 +20,7 @@ import { PostListComponent } from './components/posts/post-list/post-list.compon
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './components/auth/login/login.component';
 import { SignUpComponent } from './components/auth/sign-up/sign-up.component';
-import { AuthInterceptor } from './services/auth.interceptor';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
