@@ -56,10 +56,13 @@ export class PostListComponent implements OnInit, OnDestroy {
   onDelete(id: string) {
     this.isLoading = true;
     this.postsService.deletePost(id)
-      .subscribe(() => {
-        // FIXME / TODO - when deleting last post on last page
-        this.postsService.getPosts(this.postsPerPage, this.currentPage)
-      });
+      .subscribe( // TODO - fix deprecated usage style
+        () => {
+          // FIXME / TODO - when deleting last post on last page
+          this.postsService.getPosts(this.postsPerPage, this.currentPage)
+        },
+        err => this.isLoading = false
+      );
   }
 
 
