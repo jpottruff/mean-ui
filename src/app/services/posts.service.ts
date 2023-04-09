@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, Subject } from 'rxjs';
 import { Post } from '../posts/models/post.interface';
+import { environment } from 'src/environments/environment'; 
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,9 @@ export class PostsService {
   private posts: Post[] = [];
   private postsUpdated = new Subject<{ posts: Post[], totalPosts: number }>();
   
-  get SERVER_BASE() {
-    return `http://localhost:3000`
-  } 
+  get ENDPOINT() {
+    return `${environment.apiUrl}/posts`;
+  }
 
   constructor(private readonly http: HttpClient, private router: Router) { }
 
@@ -23,7 +24,7 @@ export class PostsService {
       page: currentPage
     }
     
-    this.http.get<{ message: string, posts: any[], totalPosts: number}>(`${this.SERVER_BASE}/api/posts`, { params } )
+    this.http.get<{ message: string, posts: any[], totalPosts: number}>(`${this.ENDPOINT}`, { params } )
       .pipe(map(res => {
         return {
           posts: res.posts.map(post => this.convertFetchedPost(post)),
@@ -41,7 +42,7 @@ export class PostsService {
   }
 
   getPost(id: string): Observable<Post> {
-    return this.http.get<{message: string, post?: Post}>(`${this.SERVER_BASE}/api/posts/${id}`)
+    return this.http.get<{message: string, post?: Post}>(`${this.ENDPOINT}/${id}`)
       .pipe(
         map(res => (res.post) ? this.convertFetchedPost(res.post) : undefined)
       )
@@ -54,7 +55,7 @@ export class PostsService {
   addPost(title: string, content: string, image: File) {
     const post = this.postAsFormData(title, content, image);
 
-    this.http.post<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts`, post)
+    this.http.post<{message: string, post: Post}>(`${this.ENDPOINT}`, post)
       .subscribe(res => this.router.navigate(['/']));
   }
 
@@ -63,12 +64,12 @@ export class PostsService {
       ? this.postAsFormData(title, content, image, id) 
       : { id, title, content, imagePath: image as string, creator: null }
 
-    this.http.put<{message: string, post: Post}>(`${this.SERVER_BASE}/api/posts/${id}`, postData)
+    this.http.put<{message: string, post: Post}>(`${this.ENDPOINT}/${id}`, postData)
       .subscribe(res => this.router.navigate(['/']))
   }
 
   deletePost(id: string) {
-    return this.http.delete(`${this.SERVER_BASE}/api/posts/${id}`);
+    return this.http.delete(`${this.ENDPOINT}/${id}`);
   }
 
   /** Converts a post retrieved from the backend to the appropriate form */

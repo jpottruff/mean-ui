@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { AuthData } from '../auth/models/auth-data.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +17,9 @@ export class AuthService {
   private authStatusListener = new Subject<boolean>();
   private userId: string;
 
-
-  get SERVER_BASE() {
-    return `http://localhost:3000`
-  } 
+  get ENDPOINT() {
+    return `${environment.apiUrl}/user`
+  }
 
   constructor(private readonly http: HttpClient, private readonly router: Router) { }
 
@@ -37,7 +37,7 @@ export class AuthService {
 
   createUser(email: string, password: string) { 
     const authData: AuthData = { email, password }; 
-    this.http.post<{}>(`${this.SERVER_BASE}/api/user/signup`, authData)
+    this.http.post<{}>(`${this.ENDPOINT}/signup`, authData)
     .subscribe( // TODO - fix deprecated usage style
       _res => {
         // TODO - login logic
@@ -50,7 +50,7 @@ export class AuthService {
   
   login(email: string, password: string): void {
     const authData: AuthData = { email, password }; 
-    this.http.post<{message: string, token: string, expiresIn: number, userId: string }>(`${this.SERVER_BASE}/api/user/login`, authData)
+    this.http.post<{message: string, token: string, expiresIn: number, userId: string }>(`${this.ENDPOINT}/login`, authData)
       .subscribe( // TODO - fix deprecated usage style
         res => {
           this.token = res.token;
