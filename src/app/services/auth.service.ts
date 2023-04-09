@@ -38,21 +38,20 @@ export class AuthService {
   createUser(email: string, password: string) { 
     const authData: AuthData = { email, password }; 
     this.http.post<{}>(`${this.ENDPOINT}/signup`, authData)
-    .subscribe( // TODO - fix deprecated usage style
-      _res => {
-        // TODO - login logic
+    .subscribe({
+      next: () => {
+        // TODO - login logic?
         this.router.navigate(['/']);
       },
-      _err => {
-        this.authStatusListener.next(false);
-      })
+      error: () => this.authStatusListener.next(false)
+    })
   }
   
   login(email: string, password: string): void {
     const authData: AuthData = { email, password }; 
     this.http.post<{message: string, token: string, expiresIn: number, userId: string }>(`${this.ENDPOINT}/login`, authData)
-      .subscribe( // TODO - fix deprecated usage style
-        res => {
+      .subscribe({
+        next: res => {
           this.token = res.token;
           if (this.token) {
             this.userId = res.userId;
@@ -70,9 +69,8 @@ export class AuthService {
             this.router.navigate(['/']);
           }
         },
-        _err => {
-          this.authStatusListener.next(false);
-        })
+        error: () => this.authStatusListener.next(false)
+      })
   }
 
   logout(): void {
